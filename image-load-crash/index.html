@@ -1,0 +1,26 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <style>
+        #overlay { position: absolute; font-size: 26px; padding: 10px; background: rgba(0, 0, 0, 0.5); color: #fff; }
+    </style>
+</head>
+
+<body>
+    <div id="overlay"></div>
+    <div id="content-container"></div>
+
+    <script src="./cordova/2.7.0/cordova.webos.js"></script>
+    <script src="./cordova-cd/1.3/configuration.js"></script>
+    <script src="./cordova-cd/1.3/deviceInfo.js"></script>
+    <script src="./cordova-cd/1.3/power.js"></script>
+    <script src="./cordova-cd/1.3/signage.js"></script>
+    <script src="./cordova-cd/1.3/sound.js"></script>
+    <script src="./cordova-cd/1.3/storage.js"></script>
+    <script src="./cordova-cd/1.3/video.js"></script>
+    <script src="./utils/promise-polyfill.js"></script>
+    <script src="./script.js"></script>
+</body>
+</html>
