@@ -1,0 +1,1248 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"> <style>
+	.KEYW {color: #933;}
+	.COMM {color: #bbb; font-style: italic;}
+	.NUMB {color: #393;}
+	.STRN {color: #393;}
+	.REGX {color: #339;}
+	.line {border-right: 1px dotted #666; color: #666; font-style: normal;}
+	</style></head><body><pre><span class='line'>  1</span> <span class="COMM">/**
+<span class='line'>  2</span>  * This represents the FileManager API itself, and provides a global namespace for operating FileManager service.
+<span class='line'>  3</span>  * FileManager will be used to manage files in internal memory.
+<span class='line'>  4</span>  * @class
+<span class='line'>  5</span>  */</span><span class="WHIT">
+<span class='line'>  6</span> </span><span class="NAME">cordova.define</span><span class="PUNC">(</span><span class="STRN">'cordova/plugin/storage'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">require</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">exports</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">module</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT"> </span><span class="COMM">// jshint ignore:line</span><span class="WHIT">
+<span class='line'>  7</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">service</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>  8</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">log</span><span class="PUNC">(</span><span class="NAME">msg</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>  9</span> </span><span class="WHIT">		</span><span class="NAME">console.log</span><span class="PUNC">(</span><span class="NAME">msg</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">// jshint ignore:line</span><span class="WHIT">
+<span class='line'> 10</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 11</span> 
+<span class='line'> 12</span> </span><span class="WHIT">	</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">window.PalmSystem</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT"> </span><span class="COMM">// jshint ignore:line</span><span class="WHIT">
+<span class='line'> 13</span> </span><span class="WHIT">		</span><span class="NAME">log</span><span class="PUNC">(</span><span class="STRN">"Window.PalmSystem Available"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 14</span> </span><span class="WHIT">		</span><span class="NAME">service</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">require</span><span class="PUNC">(</span><span class="STRN">'cordova/plugin/webos/service'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 15</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 16</span> </span><span class="WHIT">	</span><span class="KEYW">else</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 17</span> </span><span class="WHIT">		</span><span class="NAME">service</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 18</span> </span><span class="WHIT">				</span><span class="NAME">Request</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">uri</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">params</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 19</span> </span><span class="WHIT">					</span><span class="NAME">log</span><span class="PUNC">(</span><span class="NAME">uri</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="STRN">" invoked. But I am a dummy because PalmSystem is not available"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 20</span> </span><span class="WHIT">					</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">params.onFailure</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">'function'</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 21</span> </span><span class="WHIT">						</span><span class="NAME">params.onFailure</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">returnValue</span><span class="PUNC">:</span><span class="KEYW">false</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorText</span><span class="PUNC">:</span><span class="STRN">"PalmSystem Not Available. Cordova is not installed?"</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 22</span> </span><span class="WHIT">					</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 23</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 24</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 25</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 26</span> 
+<span class='line'> 27</span> </span><span class="WHIT">	</span><span class="COMM">// parseUri 1.2.2</span><span class="WHIT">
+<span class='line'> 28</span> </span><span class="WHIT">	</span><span class="COMM">// (c) Steven Levithan &lt;stevenlevithan.com></span><span class="WHIT">
+<span class='line'> 29</span> </span><span class="WHIT">	</span><span class="COMM">// MIT License</span><span class="WHIT">
+<span class='line'> 30</span> 
+<span class='line'> 31</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">parseUri</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">str</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 32</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT">	</span><span class="NAME">o</span><span class="WHIT">   </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">parseUri.options</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 33</span> </span><span class="WHIT">		</span><span class="NAME">m</span><span class="WHIT">   </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">o.parser</span><span class="PUNC">[</span><span class="NAME">o.strictMode</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT"> </span><span class="STRN">"strict"</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">"loose"</span><span class="PUNC">]</span><span class="PUNC">.</span><span class="NAME">exec</span><span class="PUNC">(</span><span class="NAME">str</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 34</span> </span><span class="WHIT">		</span><span class="NAME">uri</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 35</span> </span><span class="WHIT">		</span><span class="NAME">i</span><span class="WHIT">   </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">14</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 36</span> 
+<span class='line'> 37</span> </span><span class="WHIT">		</span><span class="KEYW">while</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">i</span><span class="PUNC">--</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="NAME">uri</span><span class="PUNC">[</span><span class="NAME">o.key</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">m</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="STRN">""</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 38</span> 
+<span class='line'> 39</span> </span><span class="WHIT">		</span><span class="NAME">uri</span><span class="PUNC">[</span><span class="NAME">o.q.name</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 40</span> </span><span class="WHIT">		</span><span class="NAME">uri</span><span class="PUNC">[</span><span class="NAME">o.key</span><span class="PUNC">[</span><span class="NUMB">12</span><span class="PUNC">]</span><span class="PUNC">]</span><span class="PUNC">.</span><span class="NAME">replace</span><span class="PUNC">(</span><span class="NAME">o.q.parser</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">$0</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">$1</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">$2</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 41</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">$1</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="NAME">uri</span><span class="PUNC">[</span><span class="NAME">o.q.name</span><span class="PUNC">]</span><span class="PUNC">[</span><span class="NAME">$1</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">$2</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 42</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 43</span> </span><span class="WHIT">		</span><span class="NAME">validateURI</span><span class="PUNC">(</span><span class="NAME">uri</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 44</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">uri</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 45</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 46</span> 
+<span class='line'> 47</span> </span><span class="WHIT">	</span><span class="NAME">parseUri.options</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 48</span> </span><span class="WHIT">			</span><span class="NAME">strictMode</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 49</span> </span><span class="WHIT">			</span><span class="NAME">key</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="STRN">"source"</span><span class="PUNC">,</span><span class="STRN">"protocol"</span><span class="PUNC">,</span><span class="STRN">"authority"</span><span class="PUNC">,</span><span class="STRN">"userInfo"</span><span class="PUNC">,</span><span class="STRN">"user"</span><span class="PUNC">,</span><span class="STRN">"password"</span><span class="PUNC">,</span><span class="STRN">"host"</span><span class="PUNC">,</span><span class="STRN">"port"</span><span class="PUNC">,</span><span class="STRN">"relative"</span><span class="PUNC">,</span><span class="STRN">"path"</span><span class="PUNC">,</span><span class="STRN">"directory"</span><span class="PUNC">,</span><span class="STRN">"file"</span><span class="PUNC">,</span><span class="STRN">"query"</span><span class="PUNC">,</span><span class="STRN">"anchor"</span><span class="PUNC">]</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 50</span> </span><span class="WHIT">			</span><span class="NAME">q</span><span class="PUNC">:</span><span class="WHIT">   </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 51</span> </span><span class="WHIT">				</span><span class="NAME">name</span><span class="PUNC">:</span><span class="WHIT">   </span><span class="STRN">"queryKey"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 52</span> </span><span class="WHIT">				</span><span class="NAME">parser</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="REGX">/(?:^|&)([^&=]*)=?([^&]*)/g</span><span class="WHIT">
+<span class='line'> 53</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 54</span> </span><span class="WHIT">			</span><span class="NAME">parser</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 55</span> </span><span class="WHIT">				</span><span class="NAME">strict</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="REGX">/^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 56</span> </span><span class="WHIT">				</span><span class="NAME">loose</span><span class="PUNC">:</span><span class="WHIT">  </span><span class="REGX">/^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/</span><span class="WHIT">
+<span class='line'> 57</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 58</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 59</span> 
+<span class='line'> 60</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">validateURI</span><span class="PUNC">(</span><span class="NAME">parser</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 61</span> 
+<span class='line'> 62</span> </span><span class="WHIT">		</span><span class="COMM">// Take file, http, or https protocol only.</span><span class="WHIT">
+<span class='line'> 63</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">parser.protocol</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">'file'</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 64</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">parser.host</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">'internal'</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 65</span> </span><span class="WHIT">				</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">validateInternalURI</span><span class="PUNC">(</span><span class="NAME">parser</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 66</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 67</span> </span><span class="WHIT">			</span><span class="KEYW">else</span><span class="WHIT"> </span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">parser.host</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">'usb'</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 68</span> </span><span class="WHIT">				</span><span class="NAME">validateUsbURI</span><span class="PUNC">(</span><span class="NAME">parser</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 69</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 70</span> </span><span class="WHIT">			</span><span class="KEYW">else</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 71</span> </span><span class="WHIT">				</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="STRN">" Invalid Host: "</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">parser.host</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 72</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 73</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 74</span> </span><span class="WHIT">		</span><span class="KEYW">else</span><span class="WHIT"> </span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">parser.protocol</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">'http'</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="NAME">parser.protocol</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">'https'</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 75</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">parser.path.charAt</span><span class="PUNC">(</span><span class="NAME">parser.path.length</span><span class="PUNC">-</span><span class="NUMB">1</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">'/'</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 76</span> </span><span class="WHIT">				</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="STRN">"Invalid path: "</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">parser.path</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 77</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 78</span> </span><span class="WHIT">			</span><span class="KEYW">else</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 79</span> </span><span class="WHIT">				</span><span class="KEYW">return</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 80</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 81</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 82</span> </span><span class="WHIT">		</span><span class="KEYW">else</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 83</span> </span><span class="WHIT">			</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="STRN">"Invalid protocol: "</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">parser.protocol</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 84</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 85</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 86</span> 
+<span class='line'> 87</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">validateInternalURI</span><span class="PUNC">(</span><span class="NAME">parser</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 88</span> 
+<span class='line'> 89</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">parser.path</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 90</span> </span><span class="WHIT">			</span><span class="NAME">log</span><span class="PUNC">(</span><span class="STRN">"Path: "</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">parser.path</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 91</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">parser.path.lastIndexOf</span><span class="PUNC">(</span><span class="STRN">"/"</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">></span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 92</span> </span><span class="WHIT">				</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="STRN">"Invalid internal path: "</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">parser.path</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 93</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 94</span> </span><span class="WHIT">			</span><span class="KEYW">else</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 95</span> </span><span class="WHIT">				</span><span class="KEYW">return</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 96</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 97</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 98</span> </span><span class="WHIT">		</span><span class="KEYW">else</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 99</span> </span><span class="WHIT">			</span><span class="NAME">log</span><span class="PUNC">(</span><span class="STRN">"No Path: "</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>100</span> </span><span class="WHIT">			</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="STRN">"Invalid internal path: "</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">parser.path</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>101</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>102</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>103</span> 
+<span class='line'>104</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">validateUsbURI</span><span class="PUNC">(</span><span class="NAME">parser</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>105</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">parser.port</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>106</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">parser.port.match</span><span class="PUNC">(</span><span class="STRN">"/[0-9]+/"</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>107</span> </span><span class="WHIT">				</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="NAME">result</span><span class="PUNC">:</span><span class="KEYW">true</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>108</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>109</span> </span><span class="WHIT">			</span><span class="KEYW">else</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>110</span> </span><span class="WHIT">				</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="STRN">"Invalid USB host: "</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">parser.host</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>111</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>112</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>113</span> </span><span class="WHIT">		</span><span class="KEYW">else</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>114</span> </span><span class="WHIT">			</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="STRN">"Invalid USB host: "</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">parser.host</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>115</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>116</span> 
+<span class='line'>117</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">parser.path</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>118</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">parser.path.charAt</span><span class="PUNC">(</span><span class="NAME">parser.path.length</span><span class="PUNC">-</span><span class="NUMB">1</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">'/'</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>119</span> </span><span class="WHIT">				</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="STRN">"Invalid USB path: "</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">parser.path</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>120</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>121</span> </span><span class="WHIT">			</span><span class="KEYW">else</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>122</span> </span><span class="WHIT">				</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="NAME">result</span><span class="PUNC">:</span><span class="KEYW">true</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>123</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>124</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>125</span> </span><span class="WHIT">		</span><span class="KEYW">else</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>126</span> </span><span class="WHIT">			</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="STRN">"Invalid USB path: "</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">parser.path</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>127</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>128</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>129</span> 
+<span class='line'>130</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>131</span> 	 * storage interface
+<span class='line'>132</span> 	 */</span><span class="WHIT">
+<span class='line'>133</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">Storage</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>134</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>135</span> 
+<span class='line'>136</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>137</span> 	 * @namespace Storage.AppMode
+<span class='line'>138</span> 	 */</span><span class="WHIT">
+<span class='line'>139</span> </span><span class="WHIT">	</span><span class="NAME">Storage.AppMode</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>140</span> </span><span class="WHIT">			</span><span class="COMM">/**
+<span class='line'>141</span> 			 * usb
+<span class='line'>142</span> 			 * @since 1.1
+<span class='line'>143</span> 			 * @constant
+<span class='line'>144</span> 			 */</span><span class="WHIT">
+<span class='line'>145</span> </span><span class="WHIT">			</span><span class="NAME">USB</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">"usb"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>146</span> </span><span class="WHIT">			</span><span class="COMM">/**
+<span class='line'>147</span> 			 * local
+<span class='line'>148</span> 			 * @since 1.1
+<span class='line'>149</span> 			 * @constant
+<span class='line'>150</span> 			 */</span><span class="WHIT">
+<span class='line'>151</span> </span><span class="WHIT">			</span><span class="NAME">LOCAL</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">"local"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>152</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>153</span> 
+<span class='line'>154</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>155</span> 	 * &lt;p>
+<span class='line'>156</span> 	 * Upgrades an application stored in the local or USB from remote server. The remote server information(serverIP and serverPort) are set in a display menu.&lt;br>
+<span class='line'>157</span> 	 * The new application will be launched at the next boot time and the old application will be deleted at the same time. The application
+<span class='line'>158</span> 	 * on the server should be at &lt;br> 
+<span class='line'>159</span> 	 * "http://serverIP:serverPort/procentric/scap/application/scap_app.zip".
+<span class='line'>160</span> 	 * &lt;br>
+<span class='line'>161</span> 	 * Note : The size of scap_app.zip (zip file itself and the extracted files) should not exceed the free storage size of the platform.&lt;br>
+<span class='line'>162</span> 	 * When the application is being upgraded, following files exist at the same time : &lt;br>
+<span class='line'>163</span> 	 *    - the old application &lt;br>
+<span class='line'>164</span> 	 *    - downloaded scap_app.zip &lt;br> 
+<span class='line'>165</span> 	 *    - content data stored by storage.copyFile() API and &lt;br> 
+<span class='line'>166</span> 	 *    - new application extracted from the downloaded scap_app.zip &lt;br>
+<span class='line'>167</span> 	 * So before upgrading the application, call storage.getStorageInfo() and check the free storage size. &lt;br>
+<span class='line'>168</span> 	 * &lt;br>
+<span class='line'>169</span> 	 * Note : An application should not include 'content' directory under application's root folder. &lt;br>
+<span class='line'>170</span> 	 * (It is reserved for Storage.copyFile() API.)
+<span class='line'>171</span> 	 * 
+<span class='line'>172</span> 	 * &lt;/p>
+<span class='line'>173</span> 	 * 
+<span class='line'>174</span> 	 * @example
+<span class='line'>175</span> 	 * 
+<span class='line'>176</span> 	 * var successCb = function (cbObject){ console.log("Application Update
+<span class='line'>177</span> 	 * successful"); };
+<span class='line'>178</span> 	 * 
+<span class='line'>179</span> 	 * var failureCb = function(cbObject){ var errorCode = cbObject.errorCode;
+<span class='line'>180</span> 	 * var errorText = cbObject.errorText; console.log( " Error Code [" +
+<span class='line'>181</span> 	 * errorCode + "]: " + errorText); };
+<span class='line'>182</span> 	 * 
+<span class='line'>183</span> 	 * var options = {};
+<span class='line'>184</span> 	 * options.to = Storage.AppMode.USB;
+<span class='line'>185</span> 	 * options.recovery = false;
+<span class='line'>186</span> 	 * storage = new Storage(); 
+<span class='line'>187</span> 	 * storage.upgradeApplication(successCb, failureCb, options);
+<span class='line'>188</span> 	 * 
+<span class='line'>189</span> 	 * 
+<span class='line'>190</span> 	 * @class storage
+<span class='line'>191</span> 	 * @param {Function}
+<span class='line'>192</span> 	 *            successCallback success callback function.
+<span class='line'>193</span> 	 * @param {Function}
+<span class='line'>194</span> 	 *            errorCallback failure callback function.
+<span class='line'>195</span> 	 * @param {Object} options
+<span class='line'>196</span> 	 * &lt;div align=left>
+<span class='line'>197</span> 	 * &lt;table class="hcap_spec" width=400>
+<span class='line'>198</span> 	 *   &lt;thead>&lt;tr>&lt;th>Property&lt;/th>&lt;th>Type&lt;/th>&lt;th>Description&lt;/th>&lt;th>Required&lt;/th>&lt;/tr>&lt;/thead>
+<span class='line'>199</span> 	 *   &lt;tbody>
+<span class='line'>200</span> 	 *       &lt;tr>&lt;th>to&lt;/th>&lt;th>String&lt;/th>&lt;th>&lt;a href="Storage.AppMode.html#constructor">Storage.AppMode&lt;/a>&lt;/th>&lt;th>required&lt;/th>&lt;/tr>
+<span class='line'>201</span> 	 *       &lt;tr class="odd">&lt;tr>&lt;th>recovery&lt;/th>&lt;th>Boolean&lt;/th>&lt;th>true : default value. If there is an error during upgrade, recover an old application.&lt;br> false : remove an old application to obtain free space of storage.&lt;/a>&lt;/th>&lt;th>optional&lt;/th>&lt;/tr>
+<span class='line'>202</span> 	 *       
+<span class='line'>203</span> 	 *   &lt;/tbody>
+<span class='line'>204</span> 	 * &lt;/table>
+<span class='line'>205</span> 	 * &lt;/div>
+<span class='line'>206</span> 	 * @returns
+<span class='line'>207</span> 	 *            &lt;p>
+<span class='line'>208</span> 	 *            After the method is successfully executed, successCallback is
+<span class='line'>209</span> 	 *            called without any parameter.
+<span class='line'>210</span> 	 *            &lt;/p>
+<span class='line'>211</span> 	 *            &lt;p>
+<span class='line'>212</span> 	 *            If an error occurs while execution of this method,
+<span class='line'>213</span> 	 *            errorCallback is called with errorCode and errorText.
+<span class='line'>214</span> 	 *            &lt;/p>
+<span class='line'>215</span> 	 * @since 1.0
+<span class='line'>216</span> 	 * @since 1.1 options.to options.recovery added
+<span class='line'>217</span> 	 * @see
+<span class='line'>218</span> 	 * &lt;a href="Storage%23removeApplication.html">Storage.removeApplication()&lt;/a>&lt;br>
+<span class='line'>219</span> 	 */</span><span class="WHIT">
+<span class='line'>220</span> </span><span class="WHIT">	</span><span class="NAME">Storage.prototype.upgradeApplication</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">successCallback</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorCallback</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">options</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>221</span> 
+<span class='line'>222</span> </span><span class="WHIT">		</span><span class="NAME">service.Request</span><span class="PUNC">(</span><span class="STRN">"luna://com.webos.service.commercial.signage.storageservice"</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>223</span> </span><span class="WHIT">			</span><span class="NAME">method</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">"upgradeApplication"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>224</span> </span><span class="WHIT">			</span><span class="NAME">parameters</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>225</span> </span><span class="WHIT">				</span><span class="NAME">from</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'remote'</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>226</span> </span><span class="WHIT">				</span><span class="NAME">to</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">options</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="NAME">undefined</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="NAME">options</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT"> </span><span class="NAME">Storage.AppMode.LOCAL</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">options.to</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>227</span> </span><span class="WHIT">				</span><span class="NAME">recovery</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">options</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="NAME">undefined</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="NAME">options</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">options.recovery</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>228</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>229</span> </span><span class="WHIT">			</span><span class="NAME">onSuccess</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">result</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>230</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">result.returnValue</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>231</span> </span><span class="WHIT">					</span><span class="NAME">successCallback</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>232</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>233</span> </span><span class="WHIT">				</span><span class="KEYW">else</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>234</span> </span><span class="WHIT">					</span><span class="NAME">errorCallback</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">errorCode</span><span class="PUNC">:</span><span class="NAME">result.errorCode</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorText</span><span class="PUNC">:</span><span class="NAME">result.errorText</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>235</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>236</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>237</span> </span><span class="WHIT">			</span><span class="NAME">onFailure</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">result</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>238</span> </span><span class="WHIT">				</span><span class="NAME">errorCallback</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">errorCode</span><span class="PUNC">:</span><span class="NAME">result.errorCode</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorText</span><span class="PUNC">:</span><span class="NAME">result.errorText</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>239</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>240</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>241</span> 
+<span class='line'>242</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>243</span> 
+<span class='line'>244</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>245</span> 	 * &lt;p>
+<span class='line'>246</span> 	 * Removes an application stored in the local or USB storage.&lt;br>
+<span class='line'>247</span> 	 * 
+<span class='line'>248</span> 	 * The current running application can't remove itself using this API.&lt;br>
+<span class='line'>249</span> 	 * (e.g. Application running from USB cannot remove itself using this API)
+<span class='line'>250</span> 	 * 
+<span class='line'>251</span> 	 * &lt;/p>
+<span class='line'>252</span> 	 * 
+<span class='line'>253</span> 	 * @example
+<span class='line'>254</span> 	 * 
+<span class='line'>255</span> 	 * var successCb = function (cbObject) { 
+<span class='line'>256</span> 	 *     console.log("Application Update successful"); 
+<span class='line'>257</span> 	 * };
+<span class='line'>258</span> 	 * 
+<span class='line'>259</span> 	 * var failureCb = function(cbObject) { 
+<span class='line'>260</span> 	 *     var errorCode = cbObject.errorCode;
+<span class='line'>261</span> 	 *     var errorText = cbObject.errorText; console.log( " Error Code [" + errorCode + "]: " + errorText); 
+<span class='line'>262</span> 	 * };
+<span class='line'>263</span> 	 * 
+<span class='line'>264</span> 	 * var options = {}; 
+<span class='line'>265</span> 	 * options.to = Storage.AppMode.LOCAL; 
+<span class='line'>266</span> 	 * storage = new Storage(); 
+<span class='line'>267</span> 	 * storage.removeApplication(successCb, failureCb, options);
+<span class='line'>268</span> 	 * 
+<span class='line'>269</span> 	 * 
+<span class='line'>270</span> 	 * @class storage
+<span class='line'>271</span> 	 * @param {Function}
+<span class='line'>272</span> 	 *            successCallback success callback function.
+<span class='line'>273</span> 	 * @param {Function}
+<span class='line'>274</span> 	 *            errorCallback failure callback function.
+<span class='line'>275</span> 	 * @param {Object} options
+<span class='line'>276</span> 	 * &lt;div align=left>
+<span class='line'>277</span> 	 * &lt;table class="hcap_spec" width=400>
+<span class='line'>278</span> 	 *   &lt;thead>&lt;tr>&lt;th>Property&lt;/th>&lt;th>Type&lt;/th>&lt;th>Description&lt;/th>&lt;th>Required&lt;/th>&lt;/tr>&lt;/thead>
+<span class='line'>279</span> 	 *   &lt;tbody>
+<span class='line'>280</span> 	 *       &lt;tr>&lt;th>to&lt;/th>&lt;th>String&lt;/th>&lt;th>&lt;a href="Storage.AppMode.html#constructor">Storage.AppMode&lt;/a>&lt;/th>&lt;th>required&lt;/th>&lt;/tr>
+<span class='line'>281</span> 	 *   &lt;/tbody>
+<span class='line'>282</span> 	 * &lt;/table>
+<span class='line'>283</span> 	 * &lt;/div>
+<span class='line'>284</span> 	 * @returns
+<span class='line'>285</span> 	 *            &lt;p>
+<span class='line'>286</span> 	 *            After the method is successfully executed, successCallback is
+<span class='line'>287</span> 	 *            called without any parameter.
+<span class='line'>288</span> 	 *            &lt;/p>
+<span class='line'>289</span> 	 *            &lt;p>
+<span class='line'>290</span> 	 *            If an error occurs while execution of this method,
+<span class='line'>291</span> 	 *            errorCallback is called with errorCode and errorText.
+<span class='line'>292</span> 	 *            &lt;/p>
+<span class='line'>293</span> 	 * @since 1.1
+<span class='line'>294</span> 	 * @see
+<span class='line'>295</span> 	 * &lt;a href="Storage%23upgradeApplication.html">Storage.upgradeApplication()&lt;/a>&lt;br>
+<span class='line'>296</span> 	 */</span><span class="WHIT">
+<span class='line'>297</span> 
+<span class='line'>298</span> </span><span class="WHIT">	</span><span class="NAME">Storage.prototype.removeApplication</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">successCallback</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorCallback</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">options</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>299</span> 
+<span class='line'>300</span> </span><span class="WHIT">		</span><span class="NAME">service.Request</span><span class="PUNC">(</span><span class="STRN">"luna://com.webos.service.commercial.signage.storageservice"</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>301</span> </span><span class="WHIT">			</span><span class="NAME">method</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">"removeApplication"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>302</span> </span><span class="WHIT">			</span><span class="NAME">parameters</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>303</span> </span><span class="WHIT">				</span><span class="NAME">to</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">options.to</span><span class="WHIT">
+<span class='line'>304</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>305</span> </span><span class="WHIT">			</span><span class="NAME">onSuccess</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">result</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>306</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">result.returnValue</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>307</span> </span><span class="WHIT">					</span><span class="NAME">successCallback</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>308</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">else</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>309</span> </span><span class="WHIT">					</span><span class="NAME">errorCallback</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">errorCode</span><span class="PUNC">:</span><span class="NAME">result.errorCode</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorText</span><span class="PUNC">:</span><span class="NAME">result.errorText</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>310</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>311</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>312</span> </span><span class="WHIT">			</span><span class="NAME">onFailure</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">result</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>313</span> </span><span class="WHIT">				</span><span class="NAME">errorCallback</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">errorCode</span><span class="PUNC">:</span><span class="NAME">result.errorCode</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorText</span><span class="PUNC">:</span><span class="NAME">result.errorText</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>314</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>315</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>316</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>317</span> 
+<span class='line'>318</span> 
+<span class='line'>319</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>320</span> 	 * &lt;p>
+<span class='line'>321</span> 	 * Do the file copy operation.
+<span class='line'>322</span> 	 * File can be copied from a USB storage, a remote site, or the internal memory to the USB storage or the internal memory.
+<span class='line'>323</span> 	 * File location should be described in a URI form defined as below.
+<span class='line'>324</span> 	 * &lt;/p>
+<span class='line'>325</span> 	 * &lt;p>Note : Copied files can be accessed by the local/usb application from the "./content" directory of the local/usb application&lt;/p>
+<span class='line'>326</span> 	 * &lt;p>Note : Copied files can be accessed from the local http file server.(http://127.0.0.1:9080/[copied_filename] &lt;/p>
+<span class='line'>327</span> 	 * &lt;p>TIP : If DNS server is not set in the monitor, accessing local file server using 'localhost' can take a long time to load the resource.
+<span class='line'>328</span> 	 * Use '127.0.0.1' instead. &lt;/p>
+<span class='line'>329</span> 	 * 
+<span class='line'>330</span> 	 * &lt;p>
+<span class='line'>331</span> 	 * Following URI schemes are available.
+<span class='line'>332</span> 	 * &lt;div align=left>
+<span class='line'>333</span> 	 * &lt;table class="hcap_spec" width=400>
+<span class='line'>334</span> 	 *   &lt;thead>&lt;tr>&lt;th>Name&lt;/th>&lt;th>Description&lt;/th>&lt;/tr>&lt;/thead>
+<span class='line'>335</span> 	 *   &lt;tbody>
+<span class='line'>336</span> 	 *       &lt;tr>
+<span class='line'>337</span> 	 *       &lt;th>file://internal/&lt;/th>
+<span class='line'>338</span> 	 *       &lt;th>Locate to a file in the internal memory space. No directories or files should be included in the path beyond the root path.&lt;br>
+<span class='line'>339</span> 	 * 		 If the path to the file destination is not found, directories for the file path will be automatically created.&lt;br>
+<span class='line'>340</span> 	 * 		 Maximum length of the pathname is 255.
+<span class='line'>341</span> 	 *       &lt;p>(note: ../ is not allowed in the file path. '*' and '?' are also not supported.)&lt;/p> 
+<span class='line'>342</span> 	 *       &lt;/th>
+<span class='line'>343</span> 	 *       &lt;/tr>
+<span class='line'>344</span> 	 *       &lt;tr class="odd">
+<span class='line'>345</span> 	 *       &lt;th>file://usb:[index]/&lt;/th>
+<span class='line'>346</span> 	 *       &lt;th>Locate to a file in a USB storage device at USB port [index]. A USB mass storage device should be connected to the port.&lt;br>
+<span class='line'>347</span> 	 *       If the path to the file destination is not found, directories for the file path will be automatically created.&lt;br>
+<span class='line'>348</span> 	 * 		 Maximum length of the pathname is 255.	
+<span class='line'>349</span> 	 *       &lt;p>(note: ../ is not allowed in the file path. '*' and '?' are also not supported.)&lt;/p> 
+<span class='line'>350</span> 	 *       &lt;/th>
+<span class='line'>351</span> 	 *       &lt;/tr>
+<span class='line'>352</span> 	 *       &lt;th>http://&lt;/th>
+<span class='line'>353</span> 	 *       &lt;th>Locate to a file in a remote location. The file is downloaded using HTTP GET protocol.&lt;/th>
+<span class='line'>354</span> 	 *       &lt;/tr>
+<span class='line'>355</span> 	 *   &lt;/tbody>
+<span class='line'>356</span> 	 * &lt;/table>
+<span class='line'>357</span> 	 * &lt;/div>
+<span class='line'>358</span> 	 * &lt;/p>
+<span class='line'>359</span> 	 * 
+<span class='line'>360</span> 	 * @example 
+<span class='line'>361</span> 	 * 
+<span class='line'>362</span> 	 * var successCb = function (){
+<span class='line'>363</span> 	 *	console.log("Copying File done.");
+<span class='line'>364</span> 	 * }; 
+<span class='line'>365</span> 	 * 
+<span class='line'>366</span> 	 * var failureCb = function(cbObject){ 
+<span class='line'>367</span> 	 *	var errorCode = cbObject.errorCode;
+<span class='line'>368</span> 	 *	var errorText = cbObject.errorText; 
+<span class='line'>369</span> 	 *	console.log( " Error Code [" + errorCode + "]: " + errorText); 
+<span class='line'>370</span> 	 * };
+<span class='line'>371</span> 	 * 
+<span class='line'>372</span> 	 * // Copy a local file in the internal memory to another location in the internal memory.
+<span class='line'>373</span> 	 * var options_local_to_local = { 
+<span class='line'>374</span> 	 *	source: 'file://internal/copy_me.txt',
+<span class='line'>375</span> 	 *	destination : 'file://internal/copy/to/here.txt'
+<span class='line'>376</span> 	 * };
+<span class='line'>377</span> 	 * 
+<span class='line'>378</span> 	 * var storage = new Storage();
+<span class='line'>379</span> 	 * storage.copyFile(successCb, failureCb, options_local_to_local);
+<span class='line'>380</span> 	 * 
+<span class='line'>381</span> 	 * 
+<span class='line'>382</span> 	 * // Copy a remote file to the internal memory.
+<span class='line'>383</span> 	 * var options_remote_to_local = { 
+<span class='line'>384</span> 	 *	source: 'http://remote.file.site/copy_me.txt',
+<span class='line'>385</span> 	 *	destination : 'file://internal/copy/to/here.txt'
+<span class='line'>386</span> 	 * }; 
+<span class='line'>387</span> 	 * 
+<span class='line'>388</span> 	 * var storage = new Storage();
+<span class='line'>389</span> 	 * storage.copyFile(successCb, failureCb, options_remote_to_local);
+<span class='line'>390</span> 	 *          
+<span class='line'>391</span> 	 * // Copy a file from a USB memory stick at port 1 to the internal memory.
+<span class='line'>392</span> 	 * var options_usb_to_local = { 
+<span class='line'>393</span> 	 *	source: 'file://usb:1/from/copy_me.txt',
+<span class='line'>394</span> 	 *	destination : 'file://internal/copy/to/here.txt'
+<span class='line'>395</span> 	 * };
+<span class='line'>396</span> 	 * 
+<span class='line'>397</span> 	 * var storage = new Storage();
+<span class='line'>398</span> 	 * storage.copyFile(successCb, failureCb, options_usb_to_local);
+<span class='line'>399</span> 	 * 
+<span class='line'>400</span> 	 * // download a remote file and copy to the mass storage device in the USB port 1.
+<span class='line'>401</span> 	 * var options_remote_to_usb = { 
+<span class='line'>402</span> 	 *	source: 'http://remote.file.site/copy_me.txt',
+<span class='line'>403</span> 	 *	destination : 'file://usb:1/copy/to/here.txt'
+<span class='line'>404</span> 	 * };
+<span class='line'>405</span> 	 * 
+<span class='line'>406</span> 	 * var storage = new Storage();
+<span class='line'>407</span> 	 * storage.copyFile(successCb, failureCb, options_remote_to_usb);
+<span class='line'>408</span> 	 * 
+<span class='line'>409</span> 	 * @class storage
+<span class='line'>410</span> 	 * @param {Function}
+<span class='line'>411</span> 	 *            successCallback success callback function.
+<span class='line'>412</span> 	 * @param {Function}
+<span class='line'>413</span> 	 *            errorCallback failure callback function.
+<span class='line'>414</span> 	 * @param {Object}
+<span class='line'>415</span> 	 *            options Input Parameters
+<span class='line'>416</span> 	 * @param {String}
+<span class='line'>417</span> 	 *            options.source URI to the source file. 
+<span class='line'>418</span> 	 * @param {String}
+<span class='line'>419</span> 	 *            options.destination. URI to the destination file. 
+<span class='line'>420</span> 	 * @returns
+<span class='line'>421</span> 	 *            &lt;p>
+<span class='line'>422</span> 	 *            After the method is successfully executed, successCallback is called
+<span class='line'>423</span> 	 *            without any parameter.
+<span class='line'>424</span> 	 *            &lt;/p>
+<span class='line'>425</span> 	 *            &lt;p>
+<span class='line'>426</span> 	 *            If an error occurs while execution of this method, errorCallback
+<span class='line'>427</span> 	 *            is called with errorCode and errorText.
+<span class='line'>428</span> 	 *            &lt;/p>
+<span class='line'>429</span> 	 * 
+<span class='line'>430</span> 	 * @since 1.0 
+<span class='line'>431</span> 	 * @since 1.1 access to local file from remote application
+<span class='line'>432</span> 	 */</span><span class="WHIT">
+<span class='line'>433</span> </span><span class="WHIT">	</span><span class="NAME">Storage.prototype.copyFile</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">successCallback</span><span class="WHIT"> </span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorCallback</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">options</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>434</span> 
+<span class='line'>435</span> </span><span class="WHIT">		</span><span class="NAME">log</span><span class="PUNC">(</span><span class="STRN">"Options: "</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">JSON.stringify</span><span class="PUNC">(</span><span class="NAME">options</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="WHIT"> </span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">3</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>436</span> 
+<span class='line'>437</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">options</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="STRN">'undefined'</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">options.destination</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="STRN">'string'</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">options.source</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="STRN">'string'</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>438</span> </span><span class="WHIT">			</span><span class="NAME">log</span><span class="PUNC">(</span><span class="STRN">"Bad options"</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>439</span> </span><span class="WHIT">			</span><span class="NAME">errorCallback</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">errorCode</span><span class="PUNC">:</span><span class="STRN">"BAD_PARAM"</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorText</span><span class="PUNC">:</span><span class="NAME">JSON.stringify</span><span class="PUNC">(</span><span class="NAME">options</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">3</span><span class="PUNC">)</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>440</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>441</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>442</span> 
+<span class='line'>443</span> </span><span class="WHIT">		</span><span class="NAME">service.Request</span><span class="PUNC">(</span><span class="STRN">"luna://com.webos.service.commercial.signage.storageservice"</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>444</span> </span><span class="WHIT">			</span><span class="NAME">method</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">"fs/copyFile"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>445</span> </span><span class="WHIT">			</span><span class="NAME">parameters</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="NAME">dest</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">options.destination</span><span class="WHIT"> </span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">src</span><span class="PUNC">:</span><span class="NAME">options.source</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>446</span> </span><span class="WHIT">			</span><span class="NAME">onSuccess</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">result</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>447</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">result.returnValue</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>448</span> </span><span class="WHIT">					</span><span class="NAME">log</span><span class="PUNC">(</span><span class="STRN">"SUCCESS"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>449</span> </span><span class="WHIT">					</span><span class="NAME">successCallback</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>450</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>451</span> </span><span class="WHIT">				</span><span class="KEYW">else</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>452</span> </span><span class="WHIT">					</span><span class="NAME">log</span><span class="PUNC">(</span><span class="STRN">"Err: "</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">result.errorText</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>453</span> </span><span class="WHIT">					</span><span class="NAME">errorCallback</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">errorCode</span><span class="PUNC">:</span><span class="NAME">result.errorCode</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorText</span><span class="PUNC">:</span><span class="NAME">result.errorText</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>454</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>455</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>456</span> </span><span class="WHIT">			</span><span class="NAME">onFailure</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">result</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>457</span> </span><span class="WHIT">				</span><span class="NAME">log</span><span class="PUNC">(</span><span class="STRN">"Err: "</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">result.errorText</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>458</span> </span><span class="WHIT">				</span><span class="NAME">errorCallback</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">errorCode</span><span class="PUNC">:</span><span class="NAME">result.errorCode</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorText</span><span class="PUNC">:</span><span class="NAME">result.errorText</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>459</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>460</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>461</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>462</span> 
+<span class='line'>463</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>464</span> 	 * &lt;p>
+<span class='line'>465</span> 	 * Remove a local file in the internal storage.
+<span class='line'>466</span> 	 * The target path is described in a URI form. 
+<span class='line'>467</span> 	 * &lt;/p>
+<span class='line'>468</span> 	 * &lt;p>
+<span class='line'>469</span> 	 * If the target path is a file, it will be removed.
+<span class='line'>470</span> 	 * &lt;/p>
+<span class='line'>471</span> 	 * &lt;p>
+<span class='line'>472</span> 	 * If the target path is a directory, the directory will be removed.
+<span class='line'>473</span> 	 * If 'recursive' parameter is 'true', any file or directory in the target directory will be removed.
+<span class='line'>474</span> 	 * If 'recursive' parameter is 'false', operation will fail if there is any file in that directory.
+<span class='line'>475</span> 	 * &lt;/p>
+<span class='line'>476</span> 	 * 
+<span class='line'>477</span> 	 * @example 
+<span class='line'>478</span> 	 * 
+<span class='line'>479</span> 	 * var successCb = function (){
+<span class='line'>480</span> 	 *	console.log("Removing File done.");
+<span class='line'>481</span> 	 * }; 
+<span class='line'>482</span> 	 * 
+<span class='line'>483</span> 	 * var failureCb = function(cbObject){ 
+<span class='line'>484</span> 	 *	var errorCode = cbObject.errorCode;
+<span class='line'>485</span> 	 *	var errorText = cbObject.errorText; 
+<span class='line'>486</span> 	 *	console.log( " Error Code [" + errorCode + "]: " + errorText); 
+<span class='line'>487</span> 	 * };
+<span class='line'>488</span> 	 * 
+<span class='line'>489</span> 	 * 
+<span class='line'>490</span> 	 * //delete a file
+<span class='line'>491</span> 	 * var options = { 
+<span class='line'>492</span> 	 *	file: 'file://internal/delete_me.txt',
+<span class='line'>493</span> 	 * }; 
+<span class='line'>494</span> 	 * 
+<span class='line'>495</span> 	 * var storage = new Storage();
+<span class='line'>496</span> 	 * storage.removeFile(successCb, failureCb, options);
+<span class='line'>497</span> 	 * 
+<span class='line'>498</span> 	 * //delete a directory and its content
+<span class='line'>499</span> 	 * var options = { 
+<span class='line'>500</span> 	 *	file: 'file://internal/delete/this/directory/',
+<span class='line'>501</span> 	 *	recursive : true
+<span class='line'>502</span> 	 * }; 
+<span class='line'>503</span> 	 * 
+<span class='line'>504</span> 	 * var storage = new Storage();
+<span class='line'>505</span> 	 * storage.removeFile(successCb, failureCb, options);
+<span class='line'>506</span> 	 * 
+<span class='line'>507</span> 	 * //delete a directory and only if its empty
+<span class='line'>508</span> 	 * var options = { 
+<span class='line'>509</span> 	 *	file: 'file://internal/empty/directory/',
+<span class='line'>510</span> 	 *	recursive : false
+<span class='line'>511</span> 	 * }; 
+<span class='line'>512</span> 	 * 
+<span class='line'>513</span> 	 * var storage = new Storage();
+<span class='line'>514</span> 	 * storage.removeFile(successCb, failureCb, options);
+<span class='line'>515</span> 	 * 
+<span class='line'>516</span> 	 * 
+<span class='line'>517</span> 	 * @class storage
+<span class='line'>518</span> 	 * @param {Function}
+<span class='line'>519</span> 	 *            successCallback success callback function.
+<span class='line'>520</span> 	 * @param {Function}
+<span class='line'>521</span> 	 *            errorCallback failure callback function.
+<span class='line'>522</span> 	 * @param {Object}
+<span class='line'>523</span> 	 *            options Input Parameters
+<span class='line'>524</span> 	 * @param {String}
+<span class='line'>525</span> 	 *            options.file URI to the file to delete. 
+<span class='line'>526</span> 	 * @param {Boolean}
+<span class='line'>527</span> 	 *            options.recursive This parameter is optional and only meaningful when removing a directory. Default value is 'false'.
+<span class='line'>528</span> 	 *            &lt;p> If true, the directory and any contents in it will be removed. &lt;/p>
+<span class='line'>529</span> 	 *            &lt;p> If false, removing the directory will fail unless it is empty. &lt;/p> 
+<span class='line'>530</span> 	 * @returns
+<span class='line'>531</span> 	 *            &lt;p>
+<span class='line'>532</span> 	 *            After the method is successfully executed, successCallback is called
+<span class='line'>533</span> 	 *            without any parameter.
+<span class='line'>534</span> 	 *            &lt;/p>
+<span class='line'>535</span> 	 *            &lt;p>
+<span class='line'>536</span> 	 *            If an error occurs while execution of this method, errorCallback
+<span class='line'>537</span> 	 *            is called with errorCode and errorText.
+<span class='line'>538</span> 	 *            &lt;/p>
+<span class='line'>539</span> 	 * 
+<span class='line'>540</span> 	 * @since 1.0 1.1 options.recursive
+<span class='line'>541</span> 	 */</span><span class="WHIT">
+<span class='line'>542</span> </span><span class="WHIT">	</span><span class="NAME">Storage.prototype.removeFile</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">successCallback</span><span class="WHIT"> </span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorCallback</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">options</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>543</span> 
+<span class='line'>544</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">options.file</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="STRN">"string"</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>545</span> </span><span class="WHIT">			</span><span class="NAME">errorCallback</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">errorCode</span><span class="PUNC">:</span><span class="STRN">"BAD_PARAM"</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorText</span><span class="PUNC">:</span><span class="STRN">"options.file is a mandatory parameter"</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>546</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>547</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>548</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">param</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>549</span> </span><span class="WHIT">				</span><span class="NAME">file</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">options.file</span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>550</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>551</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">options.recursive</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>552</span> </span><span class="WHIT">			</span><span class="NAME">param</span><span class="PUNC">[</span><span class="STRN">'recursive'</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>553</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>554</span> 
+<span class='line'>555</span> </span><span class="WHIT">		</span><span class="NAME">service.Request</span><span class="PUNC">(</span><span class="STRN">"luna://com.webos.service.commercial.signage.storageservice"</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>556</span> </span><span class="WHIT">			</span><span class="NAME">method</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">"fs/removeFile"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>557</span> </span><span class="WHIT">			</span><span class="NAME">parameters</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">param</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>558</span> </span><span class="WHIT">			</span><span class="NAME">onSuccess</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">result</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>559</span> 
+<span class='line'>560</span> </span><span class="WHIT">				</span><span class="NAME">log</span><span class="PUNC">(</span><span class="STRN">"onSuccess"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>561</span> 
+<span class='line'>562</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">result.returnValue</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>563</span> </span><span class="WHIT">					</span><span class="NAME">successCallback</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>564</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>565</span> </span><span class="WHIT">				</span><span class="KEYW">else</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>566</span> </span><span class="WHIT">					</span><span class="NAME">errorCallback</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">errorCode</span><span class="PUNC">:</span><span class="NAME">result.errorCode</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorText</span><span class="PUNC">:</span><span class="NAME">result.errorText</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>567</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>568</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>569</span> </span><span class="WHIT">			</span><span class="NAME">onFailure</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">result</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>570</span> </span><span class="WHIT">				</span><span class="NAME">log</span><span class="PUNC">(</span><span class="STRN">"onFailure"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>571</span> </span><span class="WHIT">				</span><span class="NAME">errorCallback</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">errorCode</span><span class="PUNC">:</span><span class="NAME">result.errorCode</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorText</span><span class="PUNC">:</span><span class="NAME">result.errorText</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>572</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>573</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>574</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>575</span> 
+<span class='line'>576</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>577</span> 	 * &lt;p>
+<span class='line'>578</span> 	 * List files in a directory stored in USB or internal memory. 
+<span class='line'>579</span> 	 * Directory location is in a URI format. 
+<span class='line'>580</span> 	 * Listing a directory beyond the application root path is not allowed.
+<span class='line'>581</span> 	 * &lt;/p>
+<span class='line'>582</span> 	 * 
+<span class='line'>583</span> 	 * @example 
+<span class='line'>584</span> 	 * 
+<span class='line'>585</span> 	 * var successCb = function (cbObject){
+<span class='line'>586</span> 	 *	var files = cbObject.files;
+<span class='line'>587</span> 	 *	for(var i = 0 ; i &lt; files.length; ++i){
+<span class='line'>588</span> 	 *		var fileInfo = files[i];	
+<span class='line'>589</span> 	 *		console.log("File Name: " + fileInfo.name);
+<span class='line'>590</span> 	 *		console.log("File Type: " + fileInfo.type);
+<span class='line'>591</span> 	 *		console.log("File Size: " + fileInfo.size);
+<span class='line'>592</span> 	 *	}
+<span class='line'>593</span> 	 * }; 
+<span class='line'>594</span> 	 * 
+<span class='line'>595</span> 	 * var failureCb = function(cbObject){ 
+<span class='line'>596</span> 	 *	var errorCode = cbObject.errorCode;
+<span class='line'>597</span> 	 *	var errorText = cbObject.errorText; 
+<span class='line'>598</span> 	 *	console.log( " Error Code [" + errorCode + "]: " + errorText); 
+<span class='line'>599</span> 	 * };
+<span class='line'>600</span> 	 * 
+<span class='line'>601</span> 	 * // List files in the internal memory
+<span class='line'>602</span> 	 * var listOption = { 
+<span class='line'>603</span> 	 *	path: "file://internal/list/this/dir"
+<span class='line'>604</span> 	 * }; 
+<span class='line'>605</span> 	 * 
+<span class='line'>606</span> 	 * var storage = new Storage();
+<span class='line'>607</span> 	 * storage.listFiles(successCb, failureCb, listOption);
+<span class='line'>608</span> 	 *          
+<span class='line'>609</span> 	 * // List files in the mass storage device in USB port 1.
+<span class='line'>610</span> 	 * var listOption = { 
+<span class='line'>611</span> 	 *	path: "file://usb:1/list/this/dir"
+<span class='line'>612</span> 	 * }; 
+<span class='line'>613</span> 	 * 
+<span class='line'>614</span> 	 * var storage = new Storage();
+<span class='line'>615</span> 	 * storage.listFiles(successCb, failureCb, listOption);
+<span class='line'>616</span> 	 * 
+<span class='line'>617</span> 	 * @class storage
+<span class='line'>618</span> 	 * @param {Function}
+<span class='line'>619</span> 	 *            successCallback success callback function.
+<span class='line'>620</span> 	 * @param {Function}
+<span class='line'>621</span> 	 *            errorCallback failure callback function.
+<span class='line'>622</span> 	 * @param {Object}
+<span class='line'>623</span> 	 *            options Input Parameters
+<span class='line'>624</span> 	 * @param {String}
+<span class='line'>625</span> 	 *            options.path URI to the directory to look for. Default value is "file://internal", which is root directory of internal storage.
+<span class='line'>626</span> 	 * @returns
+<span class='line'>627</span> 	 *            &lt;p>
+<span class='line'>628</span> 	 *            After the method is successfully executed, successCallback is called
+<span class='line'>629</span> 	 *            with an array of file info, which contains a list of File Info Object.
+<span class='line'>630</span> 	 *            '.' and '..' will not be included in the list.
+<span class='line'>631</span> 	 * &lt;div align=left>
+<span class='line'>632</span> 	 * &lt;table class="hcap_spec" width=400>
+<span class='line'>633</span> 	 *   &lt;thead>&lt;tr>&lt;th>Property&lt;/th>&lt;th>Type&lt;/th>&lt;th>Description&lt;/th>&lt;th>Required&lt;/th>&lt;/tr>&lt;/thead>
+<span class='line'>634</span> 	 *   &lt;tbody>
+<span class='line'>635</span> 	 *       &lt;tr>&lt;th>files&lt;/th>&lt;th>list&lt;/th>
+<span class='line'>636</span> 	 *       &lt;th>List of files in the directory. File Info has following properties.&lt;/th>
+<span class='line'>637</span> 	 *       &lt;th>required&lt;/th>&lt;/tr>
+<span class='line'>638</span> 	 *       
+<span class='line'>639</span> 	 *       &lt;tr>&lt;th>totalCount&lt;/th>&lt;th>Number&lt;/th>
+<span class='line'>640</span> 	 *       &lt;th>Number of items&lt;/th>
+<span class='line'>641</span> 	 *       &lt;th>required&lt;/th>&lt;/tr>
+<span class='line'>642</span> 	 *      
+<span class='line'>643</span> 	 *       &lt;tr>&lt;th>files.name&lt;/th>&lt;th>String&lt;/th>
+<span class='line'>644</span> 	 *       &lt;th>Name of the file&lt;/th>
+<span class='line'>645</span> 	 *       &lt;th>required&lt;/th>&lt;/tr>
+<span class='line'>646</span> 	 *       
+<span class='line'>647</span> 	 *       &lt;tr>&lt;th>files.type&lt;/th>&lt;th>String&lt;/th>
+<span class='line'>648</span> 	 *       &lt;th>Type of the file&lt;/th>
+<span class='line'>649</span> 	 *       &lt;th>required&lt;/th>&lt;/tr>
+<span class='line'>650</span> 	 *       
+<span class='line'>651</span> 	 *       &lt;tr>&lt;th>files.size&lt;/th>&lt;th>Number&lt;/th>
+<span class='line'>652</span> 	 *       &lt;th>Size of the File&lt;/th>
+<span class='line'>653</span> 	 *       &lt;th>required&lt;/th>&lt;/tr>
+<span class='line'>654</span> 	 *       
+<span class='line'>655</span> 	 *	&lt;/tbody>
+<span class='line'>656</span> 	 * &lt;/table>
+<span class='line'>657</span> 	 * &lt;/div>
+<span class='line'>658</span> 	 *            &lt;/p>
+<span class='line'>659</span> 	 *            &lt;p>
+<span class='line'>660</span> 	 *            If an error occurs while execution of this method, errorCallback
+<span class='line'>661</span> 	 *            is called with errorCode and errorText.
+<span class='line'>662</span> 	 *            &lt;/p>
+<span class='line'>663</span> 	 *            
+<span class='line'>664</span> 	 * @since 1.0
+<span class='line'>665</span> 	 * @since 1.1 list a directory
+<span class='line'>666</span> 	 */</span><span class="WHIT">
+<span class='line'>667</span> </span><span class="WHIT">	</span><span class="NAME">Storage.prototype.listFiles</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">successCallback</span><span class="WHIT"> </span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorCallback</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">options</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">		</span><span class="WHIT">
+<span class='line'>668</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">param</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>669</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>670</span> 
+<span class='line'>671</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">options</span><span class="PUNC">===</span><span class="STRN">'undefined'</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">options.path</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">"undefined"</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>672</span> </span><span class="WHIT">			</span><span class="NAME">param</span><span class="PUNC">[</span><span class="STRN">'pathURI'</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"file://internal/"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>673</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>674</span> </span><span class="WHIT">		</span><span class="KEYW">else</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>675</span> </span><span class="WHIT">			</span><span class="NAME">param</span><span class="PUNC">[</span><span class="STRN">'pathURI'</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">options.path</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>676</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>677</span> 
+<span class='line'>678</span> </span><span class="WHIT">		</span><span class="NAME">service.Request</span><span class="PUNC">(</span><span class="STRN">"luna://com.webos.service.commercial.signage.storageservice/"</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>679</span> </span><span class="WHIT">			</span><span class="NAME">method</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">"fs/listFiles"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>680</span> </span><span class="WHIT">			</span><span class="NAME">parameters</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">param</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>681</span> </span><span class="WHIT">			</span><span class="NAME">onSuccess</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">result</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>682</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">result.returnValue</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>683</span> </span><span class="WHIT">					</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">cbObj</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>684</span> </span><span class="WHIT">							</span><span class="NAME">files</span><span class="PUNC">:</span><span class="NAME">result.files</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>685</span> </span><span class="WHIT">							</span><span class="NAME">totalCount</span><span class="PUNC">:</span><span class="NAME">result.totalCount</span><span class="WHIT">
+<span class='line'>686</span> </span><span class="WHIT">					</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>687</span> </span><span class="WHIT">					</span><span class="NAME">successCallback</span><span class="PUNC">(</span><span class="NAME">cbObj</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>688</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>689</span> </span><span class="WHIT">				</span><span class="KEYW">else</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>690</span> </span><span class="WHIT">					</span><span class="NAME">errorCallback</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">errorCode</span><span class="PUNC">:</span><span class="NAME">result.errorCode</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorText</span><span class="PUNC">:</span><span class="NAME">result.errorText</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>691</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>692</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>693</span> </span><span class="WHIT">			</span><span class="NAME">onFailure</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">result</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>694</span> </span><span class="WHIT">				</span><span class="NAME">errorCallback</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">errorCode</span><span class="PUNC">:</span><span class="NAME">result.errorCode</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorText</span><span class="PUNC">:</span><span class="NAME">result.errorText</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>695</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>696</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>697</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>698</span> 
+<span class='line'>699</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>700</span> 	 * &lt;p>
+<span class='line'>701</span> 	 * Gets the internal memory status.
+<span class='line'>702</span> 	 * Returns free space and total space, in kilobytes.
+<span class='line'>703</span> 	 * If any external storage device is connected, the storage info for that device will be returned as well.
+<span class='line'>704</span> 	 * &lt;/p>
+<span class='line'>705</span> 	 * 
+<span class='line'>706</span> 	 * @example 
+<span class='line'>707</span> 	 * 
+<span class='line'>708</span> 	 * var successCb = function (cbObject){
+<span class='line'>709</span> 	 *	var free = cbObject.free;
+<span class='line'>710</span> 	 *	var total = cbObject.total;
+<span class='line'>711</span> 	 *	var used = cbObject.used;
+<span class='line'>712</span> 	 *	var externals = cbObject.externalMemory;
+<span class='line'>713</span> 	 *  	   
+<span class='line'>714</span> 	 *	console.log( "Total: " + total + "kilobytes"); 
+<span class='line'>715</span> 	 *	console.log( "Free: " + free + "kilobytes");
+<span class='line'>716</span> 	 *	console.log( "Used: " + used + "kilobytes"); 
+<span class='line'>717</span> 	 *	for(var uri in externals){
+<span class='line'>718</span> 	 *		var external = externals[uri];
+<span class='line'>719</span> 	 *		console.log("base uri: " + uri);		// ex) usb:1
+<span class='line'>720</span> 	 *		console.log("Free: " + external.free);
+<span class='line'>721</span> 	 *		console.log("Used: " + external.used);
+<span class='line'>722</span> 	 *		console.log("Total: " + external.total);
+<span class='line'>723</span> 	 *	}
+<span class='line'>724</span> 	 * }; 
+<span class='line'>725</span> 	 * 
+<span class='line'>726</span> 	 * var failureCb = function(cbObject){ 
+<span class='line'>727</span> 	 *	var errorCode = cbObject.errorCode;
+<span class='line'>728</span> 	 *	var errorText = cbObject.errorText; 
+<span class='line'>729</span> 	 *	console.log( " Error Code [" + errorCode + "]: " + errorText); 
+<span class='line'>730</span> 	 * };
+<span class='line'>731</span> 	 * 
+<span class='line'>732</span> 	 * var storage = new Storage();
+<span class='line'>733</span> 	 * storage.getStorageInfo(successCb, failureCb);
+<span class='line'>734</span> 	 *          
+<span class='line'>735</span> 	 * 
+<span class='line'>736</span> 	 * @class storage
+<span class='line'>737</span> 	 * @param {Function}
+<span class='line'>738</span> 	 *            successCallback success callback function.
+<span class='line'>739</span> 	 * @param {Function}
+<span class='line'>740</span> 	 *            errorCallback failure callback function.
+<span class='line'>741</span> 	 * @returns
+<span class='line'>742</span> 	 *            &lt;p>
+<span class='line'>743</span> 	 *            After the method is successfully executed, successCallback is called
+<span class='line'>744</span> 	 *            with free and total space.
+<span class='line'>745</span> 	 * &lt;div align=left>
+<span class='line'>746</span> 	 * &lt;table class="hcap_spec" width=400>
+<span class='line'>747</span> 	 *   &lt;thead>&lt;tr>&lt;th>Property&lt;/th>&lt;th>Type&lt;/th>&lt;th>Description&lt;/th>&lt;th>Required&lt;/th>&lt;/tr>&lt;/thead>
+<span class='line'>748</span> 	 *   &lt;tbody>
+<span class='line'>749</span> 	 *       &lt;tr>&lt;th>free&lt;/th>&lt;th>Number&lt;/th>
+<span class='line'>750</span> 	 *       &lt;th>
+<span class='line'>751</span> 	 *       Free space in internal memory, in KB.
+<span class='line'>752</span> 	 *       &lt;/th>
+<span class='line'>753</span> 	 *       &lt;th>required&lt;/th>&lt;/tr>
+<span class='line'>754</span> 	 *       &lt;tr>&lt;th>total&lt;/th>&lt;th>Number&lt;/th>
+<span class='line'>755</span> 	 *       &lt;th>
+<span class='line'>756</span> 	 *       Total space in internal memory, in KB.
+<span class='line'>757</span> 	 *       &lt;/th>
+<span class='line'>758</span> 	 *       &lt;th>required&lt;/th>&lt;/tr>
+<span class='line'>759</span> 	 *       &lt;tr>&lt;th>used&lt;/th>&lt;th>Number&lt;/th>
+<span class='line'>760</span> 	 *       &lt;th>
+<span class='line'>761</span> 	 *       Used space in internal memory, in KB.
+<span class='line'>762</span> 	 *       &lt;/th>
+<span class='line'>763</span> 	 *       &lt;th>required&lt;/th>&lt;/tr>
+<span class='line'>764</span> 	 *       &lt;tr>&lt;th>externalMemory&lt;/th>&lt;th>Array&lt;/th>
+<span class='line'>765</span> 	 *       &lt;th>
+<span class='line'>766</span> 	 *       &lt;p>
+<span class='line'>767</span> 	 *       List of external memory connected. External storage info is mapped to the URI to the device (ex.usb:1).
+<span class='line'>768</span> 	 *       &lt;/p>
+<span class='line'>769</span> 	 *       &lt;p>Each external input item is a JSON object defined as bellow. &lt;p>
+<span class='line'>770</span> 	 *      &lt;table align="center" class="hcap_spec" width=400>
+<span class='line'>771</span> 	 *   		&lt;thead>&lt;tr>&lt;th>Property&lt;/th>&lt;th>Type&lt;/th>&lt;th>Description&lt;/th>&lt;th>Required&lt;/th>&lt;/tr>&lt;/thead>
+<span class='line'>772</span> 	 *   	    &lt;tbody>
+<span class='line'>773</span> 	 *   	 	&lt;tr>&lt;th>free&lt;/th>&lt;th>Number&lt;/th>&lt;th>Free space in the external memory, in KB.&lt;/th>&lt;th>required&lt;/th>&lt;/tr>
+<span class='line'>774</span> 	 *   	 	&lt;tr>&lt;th>used&lt;/th>&lt;th>Number&lt;/th>&lt;th>Used space in the external memory, in KB.&lt;/th>&lt;th>required&lt;/th>&lt;/tr>
+<span class='line'>775</span> 	 *   	 	&lt;tr>&lt;th>total&lt;/th>&lt;th>Number&lt;/th>&lt;th>Total space in the external memory, in KB.&lt;/th>&lt;th>required&lt;/th>&lt;/tr>
+<span class='line'>776</span> 	 *          &lt;/tbody>
+<span class='line'>777</span> 	 *      &lt;/table>
+<span class='line'>778</span> 	 *       &lt;/th>
+<span class='line'>779</span> 	 *       &lt;th>optional&lt;/th>&lt;/tr>	 
+<span class='line'>780</span> 	 *    &lt;/tbody>
+<span class='line'>781</span> 	 * &lt;/table>
+<span class='line'>782</span> 	 * &lt;/div>
+<span class='line'>783</span> 	 *            &lt;/p>
+<span class='line'>784</span> 	 *            &lt;p>
+<span class='line'>785</span> 	 *            If an error occurs while execution of this method, errorCallback
+<span class='line'>786</span> 	 *            is called with errorCode and errorText.
+<span class='line'>787</span> 	 *            &lt;/p>
+<span class='line'>788</span> 	 * 
+<span class='line'>789</span> 	 * @since 1.0
+<span class='line'>790</span> 	 * @since 1.1 usb storage information
+<span class='line'>791</span> 	 */</span><span class="WHIT">
+<span class='line'>792</span> </span><span class="WHIT">	</span><span class="NAME">Storage.prototype.getStorageInfo</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">successCallback</span><span class="WHIT"> </span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorCallback</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>793</span> 
+<span class='line'>794</span> </span><span class="WHIT">		</span><span class="NAME">service.Request</span><span class="PUNC">(</span><span class="STRN">"luna://com.webos.service.commercial.signage.storageservice"</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>795</span> </span><span class="WHIT">			</span><span class="NAME">method</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">"fs/storageInfo"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>796</span> </span><span class="WHIT">			</span><span class="NAME">parameters</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>797</span> </span><span class="WHIT">			</span><span class="NAME">onSuccess</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">result</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>798</span> </span><span class="WHIT">				</span><span class="NAME">log</span><span class="PUNC">(</span><span class="STRN">"returned : "</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">JSON.stringify</span><span class="PUNC">(</span><span class="NAME">result</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">3</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>799</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">result.returnValue</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>800</span> </span><span class="WHIT">					</span><span class="NAME">log</span><span class="PUNC">(</span><span class="STRN">"returned : "</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">JSON.stringify</span><span class="PUNC">(</span><span class="NAME">result</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">3</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>801</span> </span><span class="WHIT">					</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">cbObj</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>802</span> </span><span class="WHIT">							</span><span class="NAME">free</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">result.spaceInfo.freeSize</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>803</span> </span><span class="WHIT">							</span><span class="NAME">total</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">result.spaceInfo.totalSize</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>804</span> </span><span class="WHIT">							</span><span class="NAME">used</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">result.spaceInfo.usedSize</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>805</span> </span><span class="WHIT">							</span><span class="NAME">externalMemory</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">result.externalStorage</span><span class="WHIT">
+<span class='line'>806</span> </span><span class="WHIT">					</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>807</span> </span><span class="WHIT">					</span><span class="NAME">successCallback</span><span class="PUNC">(</span><span class="NAME">cbObj</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>808</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>809</span> </span><span class="WHIT">				</span><span class="KEYW">else</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>810</span> </span><span class="WHIT">					</span><span class="NAME">errorCallback</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">errorCode</span><span class="PUNC">:</span><span class="NAME">result.errorCode</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorText</span><span class="PUNC">:</span><span class="NAME">result.errorText</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>811</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>812</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>813</span> </span><span class="WHIT">			</span><span class="NAME">onFailure</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">result</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>814</span> </span><span class="WHIT">				</span><span class="NAME">errorCallback</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">errorCode</span><span class="PUNC">:</span><span class="NAME">result.errorCode</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorText</span><span class="PUNC">:</span><span class="NAME">result.errorText</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>815</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>816</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>817</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>818</span> 
+<span class='line'>819</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>820</span> 	 * &lt;p>
+<span class='line'>821</span> 	 * Creates a directory.
+<span class='line'>822</span> 	 * The path should be described in a URI format.
+<span class='line'>823</span> 	 * If the URI is for USB, a mass storage device should be connected to the USB port with proper permission.
+<span class='line'>824</span> 	 * The directory will be created recursively.
+<span class='line'>825</span> 	 * &lt;/p>
+<span class='line'>826</span> 	 * 
+<span class='line'>827</span> 	 * @example 
+<span class='line'>828</span> 	 * 
+<span class='line'>829</span> 	 * var successCb = function (cbObject){
+<span class='line'>830</span> 	 *	console.log( "directory created successfully"); 
+<span class='line'>831</span> 	 * }; 
+<span class='line'>832</span> 	 * 
+<span class='line'>833</span> 	 * var failureCb = function(cbObject){ 
+<span class='line'>834</span> 	 *	var errorCode = cbObject.errorCode;
+<span class='line'>835</span> 	 *	var errorText = cbObject.errorText; 
+<span class='line'>836</span> 	 *	console.log( " Error Code [" + errorCode + "]: " + errorText); 
+<span class='line'>837</span> 	 * };
+<span class='line'>838</span> 	 * 
+<span class='line'>839</span> 	 * // The directory will be created recursively.
+<span class='line'>840</span> 	 * var mkdirOption = { 
+<span class='line'>841</span> 	 *	path: "file://internal/create/this/directory"
+<span class='line'>842</span> 	 * }; 
+<span class='line'>843</span> 	 * 
+<span class='line'>844</span> 	 * var storage = new Storage();
+<span class='line'>845</span> 	 * storage.mkdir(successCb, failureCb, mkdirOption);
+<span class='line'>846</span> 	 *          
+<span class='line'>847</span> 	 * @class storage
+<span class='line'>848</span> 	 * @param {Function}
+<span class='line'>849</span> 	 *            successCallback success callback function.
+<span class='line'>850</span> 	 * @param {Function}
+<span class='line'>851</span> 	 *            errorCallback failure callback function.
+<span class='line'>852</span> 	 * @param {Object}
+<span class='line'>853</span> 	 *            options Input Parameters
+<span class='line'>854</span> 	 * @param {String}
+<span class='line'>855</span> 	 *            options.path URI to the directory to create. 
+<span class='line'>856</span> 	 * @returns
+<span class='line'>857</span> 	 *            &lt;p>
+<span class='line'>858</span> 	 *            After the method is successfully executed, successCallback is called without any parameter.
+<span class='line'>859</span> 	 *            &lt;/p>
+<span class='line'>860</span> 	 *            &lt;p>
+<span class='line'>861</span> 	 *            If an error occurs while execution of this method, errorCallback
+<span class='line'>862</span> 	 *            is called with errorCode and errorText.
+<span class='line'>863</span> 	 *            &lt;/p>
+<span class='line'>864</span> 	 * 
+<span class='line'>865</span> 	 * @since 1.1
+<span class='line'>866</span> 	 */</span><span class="WHIT">
+<span class='line'>867</span> </span><span class="WHIT">	</span><span class="NAME">Storage.prototype.mkdir</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">successCallback</span><span class="WHIT"> </span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorCallback</span><span class="PUNC">,</span><span class="NAME">options</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>868</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">options.path</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="STRN">"string"</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>869</span> </span><span class="WHIT">			</span><span class="NAME">errorCallback</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">errorCode</span><span class="PUNC">:</span><span class="STRN">"BAD_PARAM"</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorText</span><span class="PUNC">:</span><span class="STRN">"options.path is a mandatory parameter"</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>870</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>871</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>872</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">param</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>873</span> </span><span class="WHIT">				</span><span class="NAME">pathURI</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">options.path</span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>874</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>875</span> 
+<span class='line'>876</span> </span><span class="WHIT">		</span><span class="NAME">service.Request</span><span class="PUNC">(</span><span class="STRN">"luna://com.webos.service.commercial.signage.storageservice"</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>877</span> </span><span class="WHIT">			</span><span class="NAME">method</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">"fs/mkdir"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>878</span> </span><span class="WHIT">			</span><span class="NAME">parameters</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">param</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>879</span> </span><span class="WHIT">			</span><span class="NAME">onSuccess</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">result</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>880</span> 
+<span class='line'>881</span> </span><span class="WHIT">				</span><span class="NAME">log</span><span class="PUNC">(</span><span class="STRN">"onSuccess"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>882</span> 
+<span class='line'>883</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">result.returnValue</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>884</span> </span><span class="WHIT">					</span><span class="NAME">successCallback</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>885</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>886</span> </span><span class="WHIT">				</span><span class="KEYW">else</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>887</span> </span><span class="WHIT">					</span><span class="NAME">errorCallback</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">errorCode</span><span class="PUNC">:</span><span class="NAME">result.errorCode</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorText</span><span class="PUNC">:</span><span class="NAME">result.errorText</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>888</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>889</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>890</span> </span><span class="WHIT">			</span><span class="NAME">onFailure</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">result</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>891</span> </span><span class="WHIT">				</span><span class="NAME">log</span><span class="PUNC">(</span><span class="STRN">"onFailure"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>892</span> </span><span class="WHIT">				</span><span class="NAME">errorCallback</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">errorCode</span><span class="PUNC">:</span><span class="NAME">result.errorCode</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorText</span><span class="PUNC">:</span><span class="NAME">result.errorText</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>893</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>894</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>895</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>896</span> 
+<span class='line'>897</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>898</span> 	 * &lt;p>
+<span class='line'>899</span> 	 * Checks if the given file exists or not.
+<span class='line'>900</span> 	 * The path should be in a URI format.
+<span class='line'>901</span> 	 * If the URI is for USB, a mass storage device should be connected to the USB port with proper permission.
+<span class='line'>902</span> 	 * &lt;/p>
+<span class='line'>903</span> 	 * 
+<span class='line'>904</span> 	 * @example 
+<span class='line'>905</span> 	 * 
+<span class='line'>906</span> 	 * var successCb = function (cbObject){
+<span class='line'>907</span> 	 *  var exists = cbObject.exists;
+<span class='line'>908</span> 	 *	console.log( "The file exists: " + exists); 
+<span class='line'>909</span> 	 * }; 
+<span class='line'>910</span> 	 * 
+<span class='line'>911</span> 	 * var failureCb = function(cbObject){ 
+<span class='line'>912</span> 	 *	var errorCode = cbObject.errorCode;
+<span class='line'>913</span> 	 *	var errorText = cbObject.errorText; 
+<span class='line'>914</span> 	 *	console.log( " Error Code [" + errorCode + "]: " + errorText); 
+<span class='line'>915</span> 	 * };
+<span class='line'>916</span> 	 * 
+<span class='line'>917</span> 	 * var existsOption = { 
+<span class='line'>918</span> 	 *	path: "file://internal/to/be/or/not/to/be"
+<span class='line'>919</span> 	 * }; 
+<span class='line'>920</span> 	 * 
+<span class='line'>921</span> 	 * var storage = new Storage();
+<span class='line'>922</span> 	 * storage.exists(successCb, failureCb, existsOption);
+<span class='line'>923</span> 	 *          
+<span class='line'>924</span> 	 * @class storage
+<span class='line'>925</span> 	 * @param {Function}
+<span class='line'>926</span> 	 *            successCallback success callback function.
+<span class='line'>927</span> 	 * @param {Function}
+<span class='line'>928</span> 	 *            errorCallback failure callback function.
+<span class='line'>929</span> 	 * @param {Object}
+<span class='line'>930</span> 	 *            options Input Parameters
+<span class='line'>931</span> 	 * @param {String}
+<span class='line'>932</span> 	 *            options.path URI to the resource (internal/usb). 
+<span class='line'>933</span> 	 * @returns
+<span class='line'>934</span> 	 *            &lt;p>
+<span class='line'>935</span> 	 *            After the method is successfully executed, successCallback is called with a boolean attribute 'exists', which is true if the file exists and false otherwise.
+<span class='line'>936</span> 	 *            &lt;/p>
+<span class='line'>937</span> 	 *            &lt;p>
+<span class='line'>938</span> 	 *            If an error occurs while execution of this method, errorCallback
+<span class='line'>939</span> 	 *            is called with errorCode and errorText.
+<span class='line'>940</span> 	 *            &lt;/p>
+<span class='line'>941</span> 	 * 
+<span class='line'>942</span> 	 * @since 1.1
+<span class='line'>943</span> 	 */</span><span class="WHIT">
+<span class='line'>944</span> </span><span class="WHIT">	</span><span class="NAME">Storage.prototype.exists</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">successCallback</span><span class="WHIT"> </span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorCallback</span><span class="PUNC">,</span><span class="NAME">options</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>945</span> 
+<span class='line'>946</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">options.path</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="STRN">"string"</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>947</span> </span><span class="WHIT">			</span><span class="NAME">log</span><span class="PUNC">(</span><span class="STRN">"BAD_PARAM"</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>948</span> 
+<span class='line'>949</span> </span><span class="WHIT">			</span><span class="NAME">errorCallback</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">errorCode</span><span class="PUNC">:</span><span class="STRN">"BAD_PARAM"</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorText</span><span class="PUNC">:</span><span class="STRN">"options.path is a mandatory parameter"</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>950</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>951</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>952</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">param</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>953</span> </span><span class="WHIT">				</span><span class="NAME">pathURI</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">options.path</span><span class="WHIT">
+<span class='line'>954</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>955</span> 
+<span class='line'>956</span> </span><span class="WHIT">		</span><span class="NAME">service.Request</span><span class="PUNC">(</span><span class="STRN">"luna://com.webos.service.commercial.signage.storageservice"</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>957</span> </span><span class="WHIT">			</span><span class="NAME">method</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">"fs/exists"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>958</span> </span><span class="WHIT">			</span><span class="NAME">parameters</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">param</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>959</span> </span><span class="WHIT">			</span><span class="NAME">onSuccess</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">result</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>960</span> 
+<span class='line'>961</span> </span><span class="WHIT">				</span><span class="NAME">log</span><span class="PUNC">(</span><span class="STRN">"onSuccess"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>962</span> 
+<span class='line'>963</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">result.returnValue</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>964</span> </span><span class="WHIT">					</span><span class="NAME">log</span><span class="PUNC">(</span><span class="STRN">"returned : "</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">JSON.stringify</span><span class="PUNC">(</span><span class="NAME">result</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">3</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>965</span> </span><span class="WHIT">					</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">cbObj</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>966</span> </span><span class="WHIT">							</span><span class="NAME">exists</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">result.exists</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>967</span> </span><span class="WHIT">					</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>968</span> </span><span class="WHIT">					</span><span class="NAME">successCallback</span><span class="PUNC">(</span><span class="NAME">cbObj</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">					</span><span class="WHIT">
+<span class='line'>969</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>970</span> </span><span class="WHIT">				</span><span class="KEYW">else</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>971</span> </span><span class="WHIT">					</span><span class="NAME">errorCallback</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">errorCode</span><span class="PUNC">:</span><span class="NAME">result.errorCode</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorText</span><span class="PUNC">:</span><span class="NAME">result.errorText</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>972</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>973</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>974</span> </span><span class="WHIT">			</span><span class="NAME">onFailure</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">result</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>975</span> </span><span class="WHIT">				</span><span class="NAME">log</span><span class="PUNC">(</span><span class="STRN">"onFailure"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>976</span> </span><span class="WHIT">				</span><span class="NAME">errorCallback</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">errorCode</span><span class="PUNC">:</span><span class="NAME">result.errorCode</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorText</span><span class="PUNC">:</span><span class="NAME">result.errorText</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>977</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>978</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>979</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>980</span> 
+<span class='line'>981</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>982</span> 	 * 
+<span class='line'>983</span> 	 * Read File
+<span class='line'>984</span> 	 * 
+<span class='line'>985</span> 	 * @example 
+<span class='line'>986</span> 	 * 		example
+<span class='line'>987</span> 	 *          
+<span class='line'>988</span> 	 * @class storage
+<span class='line'>989</span> 	 * @param {Function}
+<span class='line'>990</span> 	 *            successCallback success callback function.
+<span class='line'>991</span> 	 * @param {Function}
+<span class='line'>992</span> 	 *            errorCallback failure callback function.
+<span class='line'>993</span> 	 * @param {Object}
+<span class='line'>994</span> 	 *            options Input Parameters
+<span class='line'>995</span> 	 * @param {String}
+<span class='line'>996</span> 	 *            options.path URI to the resource (internal/usb). 
+<span class='line'>997</span> 	 * @param {int}
+<span class='line'>998</span> 	 *            options.position Position where this file will be read. 
+<span class='line'>999</span> 	 * @param {int}
+<span class='line'>1000</span> 	 *            options.length Read File Length. 
+<span class='line'>1001</span> 	 * @returns
+<span class='line'>1002</span> 	 *            &lt;p>
+<span class='line'>1003</span> 	 *            After the method is successfully executed, successCallback is called 
+<span class='line'>1004</span> 	 *            with a ArrayBuffer containing the file data.
+<span class='line'>1005</span> 	 *            &lt;/p>
+<span class='line'>1006</span> 	 *            &lt;p>
+<span class='line'>1007</span> 	 *            If an error occurs while execution of this method, errorCallback
+<span class='line'>1008</span> 	 *            is called with errorCode and errorText.
+<span class='line'>1009</span> 	 *            &lt;/p>
+<span class='line'>1010</span> 	 * 
+<span class='line'>1011</span> 	 * @since 1.2
+<span class='line'>1012</span> 	 */</span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>1013</span> </span><span class="WHIT">	</span><span class="NAME">Storage.prototype.readFile</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">successCallback</span><span class="WHIT"> </span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorCallback</span><span class="PUNC">,</span><span class="NAME">options</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1014</span> 
+<span class='line'>1015</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>1016</span> 
+<span class='line'>1017</span> 
+<span class='line'>1018</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>1019</span> 	 * 
+<span class='line'>1020</span> 	 * Write File
+<span class='line'>1021</span> 	 * 
+<span class='line'>1022</span> 	 * @example 
+<span class='line'>1023</span> 	 * 		example
+<span class='line'>1024</span> 	 *          
+<span class='line'>1025</span> 	 * @class storage
+<span class='line'>1026</span> 	 * @param {Function}
+<span class='line'>1027</span> 	 *            successCallback success callback function.
+<span class='line'>1028</span> 	 * @param {Function}
+<span class='line'>1029</span> 	 *            errorCallback failure callback function.
+<span class='line'>1030</span> 	 * @param {Object}
+<span class='line'>1031</span> 	 *            options Input Parameters
+<span class='line'>1032</span> 	 * @param {String}
+<span class='line'>1033</span> 	 *            options.path URI to the resource (internal/usb). 
+<span class='line'>1034</span> 	 * @param {ArrayBuffer}
+<span class='line'>1035</span> 	 *            options.data Binary data, stored in ArrayBuffer. 
+<span class='line'>1036</span> 	 * @param {string}
+<span class='line'>1037</span> 	 *            options.flag Write File flag. 
+<span class='line'>1038</span> 	 *            w : Open for writing, file is created if it does not exist, and truncated if exists.
+<span class='line'>1039</span> 	 *            wx : Open for writing, but fails if the file exists.
+<span class='line'>1040</span> 	 *            a : Open for apeending. The file is created if it does not exist.
+<span class='line'>1041</span> 	 *            ax : Open for apeending, but fails if the file exists
+<span class='line'>1042</span> 	 * @param {int}
+<span class='line'>1043</span> 	 *            options.position Position where this file will be written. 
+<span class='line'>1044</span> 	 * @param {int}
+<span class='line'>1045</span> 	 *            options.offset Offset from the data array.            
+<span class='line'>1046</span> 	 * @param {int}
+<span class='line'>1047</span> 	 *            options.length Write File Length. 
+<span class='line'>1048</span> 	 * @returns
+<span class='line'>1049</span> 	 *            &lt;p>
+<span class='line'>1050</span> 	 *            After the method is successfully executed, successCallback is called 
+<span class='line'>1051</span> 	 *            with the number of bytes written.
+<span class='line'>1052</span> 	 *            &lt;/p>
+<span class='line'>1053</span> 	 *            &lt;p>
+<span class='line'>1054</span> 	 *            If an error occurs while execution of this method, errorCallback
+<span class='line'>1055</span> 	 *            is called with errorCode and errorText.
+<span class='line'>1056</span> 	 *            &lt;/p>
+<span class='line'>1057</span> 	 * 
+<span class='line'>1058</span> 	 * @since 1.2
+<span class='line'>1059</span> 	 */</span><span class="WHIT">		</span><span class="WHIT">
+<span class='line'>1060</span> </span><span class="WHIT">	</span><span class="NAME">Storage.prototype.writeFile</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">successCallback</span><span class="WHIT"> </span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorCallback</span><span class="PUNC">,</span><span class="NAME">options</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1061</span> 
+<span class='line'>1062</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>1063</span> 
+<span class='line'>1064</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>1065</span> 	 * 
+<span class='line'>1066</span> 	 * Stat File.
+<span class='line'>1067</span> 	 * Static link will not stat the linked file.
+<span class='line'>1068</span> 	 * 
+<span class='line'>1069</span> 	 * @example 
+<span class='line'>1070</span> 	 * 		example
+<span class='line'>1071</span> 	 *          
+<span class='line'>1072</span> 	 * @class storage
+<span class='line'>1073</span> 	 * @param {Function}
+<span class='line'>1074</span> 	 *            successCallback success callback function.
+<span class='line'>1075</span> 	 * @param {Function}
+<span class='line'>1076</span> 	 *            errorCallback failure callback function.
+<span class='line'>1077</span> 	 * @param {Object}
+<span class='line'>1078</span> 	 *            options Input Parameters
+<span class='line'>1079</span> 	 * @param {String}
+<span class='line'>1080</span> 	 *            options.path URI to the resource (internal/usb). 
+<span class='line'>1081</span> 	 * @returns
+<span class='line'>1082</span> 	 *            &lt;p>
+<span class='line'>1083</span> 	 *            After the method is successfully executed, successCallback is called 
+<span class='line'>1084</span> 	 *            with the File stat.
+<span class='line'>1085</span> 	 *            example: 
+<span class='line'>1086</span> 	 *            {   
+<span class='line'>1087</span> 	 *            	  type: file|directory
+<span class='line'>1088</span> 	 *            	  dev: 2114,
+<span class='line'>1089</span> 					  ino: 48064969,
+<span class='line'>1090</span> 					  mode: 33188,
+<span class='line'>1091</span> 					  nlink: 1,
+<span class='line'>1092</span> 					  uid: 85,
+<span class='line'>1093</span> 					  gid: 100,
+<span class='line'>1094</span> 					  rdev: 0,
+<span class='line'>1095</span> 					  size: 527,
+<span class='line'>1096</span> 					  blksize: 4096,
+<span class='line'>1097</span> 					  blocks: 8,
+<span class='line'>1098</span> 					  atime: Mon, 10 Oct 2011 23:24:11 GMT,
+<span class='line'>1099</span> 					  mtime: Mon, 10 Oct 2011 23:24:11 GMT,
+<span class='line'>1100</span> 					  ctime: Mon, 10 Oct 2011 23:24:11 GMT 
+<span class='line'>1101</span> 				  }
+<span class='line'>1102</span> 	 *            &lt;/p>
+<span class='line'>1103</span> 	 *            &lt;p>
+<span class='line'>1104</span> 	 *            If an error occurs while execution of this method, errorCallback
+<span class='line'>1105</span> 	 *            is called with errorCode and errorText.
+<span class='line'>1106</span> 	 *            &lt;/p>
+<span class='line'>1107</span> 	 * 
+<span class='line'>1108</span> 	 * @since 1.2
+<span class='line'>1109</span> 	 */</span><span class="WHIT">		</span><span class="WHIT">
+<span class='line'>1110</span> </span><span class="WHIT">	</span><span class="NAME">Storage.prototype.statFile</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">successCallback</span><span class="WHIT"> </span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorCallback</span><span class="PUNC">,</span><span class="NAME">options</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1111</span> 
+<span class='line'>1112</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>1113</span> 
+<span class='line'>1114</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>1115</span> 	 * 
+<span class='line'>1116</span> 	 * Remove all files in given file system
+<span class='line'>1117</span> 	 * 
+<span class='line'>1118</span> 	 * @example 
+<span class='line'>1119</span> 	 * 		example
+<span class='line'>1120</span> 	 *          
+<span class='line'>1121</span> 	 * @class storage
+<span class='line'>1122</span> 	 * @param {Function}
+<span class='line'>1123</span> 	 *            successCallback success callback function.
+<span class='line'>1124</span> 	 * @param {Function}
+<span class='line'>1125</span> 	 *            errorCallback failure callback function.
+<span class='line'>1126</span> 	 * @param {Object}
+<span class='line'>1127</span> 	 *            options Input Parameters
+<span class='line'>1128</span> 	 * @param {String}
+<span class='line'>1129</span> 	 *            options.device device to format. (internal, usb:1, ...)
+<span class='line'>1130</span> 	 * @returns
+<span class='line'>1131</span> 	 *            &lt;p>
+<span class='line'>1132</span> 	 *            After the method is successfully executed, successCallback is called 
+<span class='line'>1133</span> 	 *            &lt;/p>
+<span class='line'>1134</span> 	 *            &lt;p>
+<span class='line'>1135</span> 	 *            If an error occurs while execution of this method, errorCallback
+<span class='line'>1136</span> 	 *            is called with errorCode and errorText.
+<span class='line'>1137</span> 	 *            &lt;/p>
+<span class='line'>1138</span> 	 * 
+<span class='line'>1139</span> 	 * @since 1.2
+<span class='line'>1140</span> 	 */</span><span class="WHIT">		</span><span class="WHIT">
+<span class='line'>1141</span> </span><span class="WHIT">	</span><span class="NAME">Storage.prototype.removeAll</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">successCallback</span><span class="WHIT"> </span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorCallback</span><span class="PUNC">,</span><span class="NAME">options</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1142</span> 
+<span class='line'>1143</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>1144</span> 
+<span class='line'>1145</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>1146</span> 	 * 
+<span class='line'>1147</span> 	 * Flush all the modified file data to the disk.
+<span class='line'>1148</span> 	 * 
+<span class='line'>1149</span> 	 * @example 
+<span class='line'>1150</span> 	 * 		example
+<span class='line'>1151</span> 	 *          
+<span class='line'>1152</span> 	 * @class storage
+<span class='line'>1153</span> 	 * @param {Function}
+<span class='line'>1154</span> 	 *            successCallback success callback function.
+<span class='line'>1155</span> 	 * @param {Function}
+<span class='line'>1156</span> 	 *            errorCallback failure callback function.
+<span class='line'>1157</span> 	 * @param {Object}
+<span class='line'>1158</span> 	 *            options Input Parameters
+<span class='line'>1159</span> 	 * @param {String}
+<span class='line'>1160</span> 	 *            options.path URI to the resource (internal/usb). 
+<span class='line'>1161</span> 	 * @returns
+<span class='line'>1162</span> 	 *            &lt;p>
+<span class='line'>1163</span> 	 *            After the method is successfully executed, successCallback is called 
+<span class='line'>1164</span> 	 *            &lt;/p>
+<span class='line'>1165</span> 	 *            &lt;p>
+<span class='line'>1166</span> 	 *            If an error occurs while execution of this method, errorCallback
+<span class='line'>1167</span> 	 *            is called with errorCode and errorText.
+<span class='line'>1168</span> 	 *            &lt;/p>
+<span class='line'>1169</span> 	 * 
+<span class='line'>1170</span> 	 * @since 1.2
+<span class='line'>1171</span> 	 */</span><span class="WHIT">		</span><span class="WHIT">
+<span class='line'>1172</span> </span><span class="WHIT">	</span><span class="NAME">Storage.prototype.syncFile</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">successCallback</span><span class="WHIT"> </span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorCallback</span><span class="PUNC">,</span><span class="NAME">options</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1173</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">			</span><span class="WHIT">
+<span class='line'>1174</span> 
+<span class='line'>1175</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>1176</span> 	 * 
+<span class='line'>1177</span> 	 * Move file.
+<span class='line'>1178</span> 	 * 
+<span class='line'>1179</span> 	 * @example 
+<span class='line'>1180</span> 	 * 		example
+<span class='line'>1181</span> 	 *          
+<span class='line'>1182</span> 	 * @class storage
+<span class='line'>1183</span> 	 * @param {Function}
+<span class='line'>1184</span> 	 *            successCallback success callback function.
+<span class='line'>1185</span> 	 * @param {Function}
+<span class='line'>1186</span> 	 *            errorCallback failure callback function.
+<span class='line'>1187</span> 	 * @param {Object}
+<span class='line'>1188</span> 	 *            options Input Parameters
+<span class='line'>1189</span> 	 * @param {String}
+<span class='line'>1190</span> 	 *            options.oldPath URI to the original file (internal/usb). 
+<span class='line'>1191</span> 	 * @param {String}
+<span class='line'>1192</span> 	 *            options.newPath URI to the new file (internal/usb). 
+<span class='line'>1193</span> 	 * @returns
+<span class='line'>1194</span> 	 *            &lt;p>
+<span class='line'>1195</span> 	 *            After the method is successfully executed, successCallback is called 
+<span class='line'>1196</span> 	 *            &lt;/p>
+<span class='line'>1197</span> 	 *            &lt;p>
+<span class='line'>1198</span> 	 *            If an error occurs while execution of this method, errorCallback
+<span class='line'>1199</span> 	 *            is called with errorCode and errorText.
+<span class='line'>1200</span> 	 *            &lt;/p>
+<span class='line'>1201</span> 	 * 
+<span class='line'>1202</span> 	 * @since 1.2
+<span class='line'>1203</span> 	 */</span><span class="WHIT">		</span><span class="WHIT">
+<span class='line'>1204</span> </span><span class="WHIT">	</span><span class="NAME">Storage.prototype.moveFile</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">successCallback</span><span class="WHIT"> </span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorCallback</span><span class="PUNC">,</span><span class="NAME">options</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1205</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>1206</span> 
+<span class='line'>1207</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>1208</span> 	 * 
+<span class='line'>1209</span> 	 * Unzip a file.
+<span class='line'>1210</span> 	 * 
+<span class='line'>1211</span> 	 * @example 
+<span class='line'>1212</span> 	 * 		example
+<span class='line'>1213</span> 	 *          
+<span class='line'>1214</span> 	 * @class storage
+<span class='line'>1215</span> 	 * @param {Function}
+<span class='line'>1216</span> 	 *            successCallback success callback function.
+<span class='line'>1217</span> 	 * @param {Function}
+<span class='line'>1218</span> 	 *            errorCallback failure callback function.
+<span class='line'>1219</span> 	 * @param {Object}
+<span class='line'>1220</span> 	 *            options Input Parameters
+<span class='line'>1221</span> 	 * @param {String}
+<span class='line'>1222</span> 	 *            options.path URI to the zip file (internal/usb). 
+<span class='line'>1223</span> 	 * @returns
+<span class='line'>1224</span> 	 *            &lt;p>
+<span class='line'>1225</span> 	 *            After the method is successfully executed, successCallback is called 
+<span class='line'>1226</span> 	 *            &lt;/p>
+<span class='line'>1227</span> 	 *            &lt;p>
+<span class='line'>1228</span> 	 *            If an error occurs while execution of this method, errorCallback
+<span class='line'>1229</span> 	 *            is called with errorCode and errorText.
+<span class='line'>1230</span> 	 *            &lt;/p>
+<span class='line'>1231</span> 	 * 
+<span class='line'>1232</span> 	 * @since 1.2
+<span class='line'>1233</span> 	 */</span><span class="WHIT">		</span><span class="WHIT">
+<span class='line'>1234</span> </span><span class="WHIT">	</span><span class="NAME">Storage.prototype.unzipFile</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">successCallback</span><span class="WHIT"> </span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">errorCallback</span><span class="PUNC">,</span><span class="NAME">options</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1235</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>1236</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>1237</span> </span><span class="WHIT">	</span><span class="NAME">module.exports</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">Storage</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1238</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1239</span> 
+<span class='line'>1240</span> </span><span class="NAME">Storage</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">cordova.require</span><span class="PUNC">(</span><span class="STRN">'cordova/plugin/storage'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">// jshint ignore:line</span><span class="WHIT">
+<span class='line'>1241</span> </span></pre></body></html>
