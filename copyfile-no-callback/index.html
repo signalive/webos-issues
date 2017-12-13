@@ -1,0 +1,35 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Mocha Tests</title>
+  <link href="mocha.css" rel="stylesheet" />
+  <style>html, body { background: #fff; }</style>
+</head>
+<body>
+  <div id="storage-watcher" style="position: fixed; top: 0; left: 0;">
+    <span class="title">Storage usage: </span>
+    <span class="used">...</span>
+    <span>/</span>
+    <span class="total">...</span>
+    <span>MB</span>
+  </div>
+  <div id="mocha" style="height: 100%; overflow-y: auto;"></div>
+
+  <script src="mocha.js"></script>
+  <script src="async.min.js"></script>
+  <script src="cordova.js"></script>
+  <script src="scaps/1.2/storage.js"></script>
+  <script src="scaps/1.3/storage.js"></script>
+  <script src="scaps/1.4/storage.js"></script>
+  <script src="scaps/1.3/configuration.js"></script>
+  <script src="storage-usage-watcher.js"></script>
+  <script>
+    mocha.setup('bdd');
+  </script>
+  <script src="tests.js"></script>
+  <script>
+    mocha.run();
+  </script>
+</body>
+</html>
+
