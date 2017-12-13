@@ -24,6 +24,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (e.keyCode == 57)
             clearLogs();
+
+        if (e.keyCode == 50)
+            deleteFirstTimer();
     });
 });
 
@@ -68,6 +71,20 @@ function displayTimers(timers) {
     }).join('');
 
     $timers.innerHTML = html;
+}
+
+function deleteFirstTimer() {
+    if (scapAvailable) {
+        var power = new Power();
+        power.getOnTimerList(function(response) {
+            if (response.timerList.length > 0) {
+                power.deleteOnTimer(putLog, putErrorLog, response.timerList[0]);
+            }
+        }, putErrorLog);
+    } else {
+        mem.shift();
+        putLog();
+    }
 }
 
 
